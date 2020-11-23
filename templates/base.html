@@ -1,0 +1,187 @@
+{% load static %}
+{% get_media_prefix as MEDIA_URL %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>{{ config.SITE_TITLE }}</title>
+    <meta name="description" content="{{ config.SITE_DESCRIPTION }}">
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"/>
+    <link rel="stylesheet" href="{% static '/assets/css/main.css' %}"/>
+    <link rel="icon" href="{{ MEDIA_URL }}{{ config.SITE_FAVICON }}" type="image/png" sizes="16x16">
+</head>
+<body class="is-preload">
+
+<!-- Wrapper -->
+<div id="wrapper">
+
+    <!-- Main -->
+    <div id="main">
+        <div class="inner">
+
+            <!-- Header -->
+            <header id="header">
+                <a href="{% url 'blog:index' %}" class="logo"><strong>{{ config.SITE_TITLE }}</strong></a>
+                <ul class="icons">
+                    {% if config.SOCIAL_NETWORKS_TWITTER_URL != '#' %}
+                        <li><a href="{{ config.SOCIAL_NETWORKS_TWITTER_URL }}" class="icon brands fa-twitter"
+                               title="Twitter"><span class="label">Twitter</span></a></li>
+                    {% endif %}
+                    {% if config.SOCIAL_NETWORKS_FACEBOOK_URL != '#' %}
+                        <li><a href="{{ config.SOCIAL_NETWORKS_FACEBOOK_URL }}" class="icon brands fa-facebook-f"
+                               title="Facebook"><span class="label">Facebook</span></a></li>
+                    {% endif %}
+                    {% if config.SOCIAL_NETWORKS_SNAPCHAT_URL != '#' %}
+                        <li><a href="{{ config.SOCIAL_NETWORKS_SNAPCHAT_URL }}" class="icon brands fa-snapchat-ghost"
+                               title="Snapchat"><span class="label">Snapchat</span></a></li>
+                    {% endif %}
+                    {% if config.SOCIAL_NETWORKS_INSTAGRAM_URL != '#' %}
+                        <li><a href="{{ config.SOCIAL_NETWORKS_INSTAGRAM_URL }}" class="icon brands fa-instagram"
+                               title="Instagram"><span class="label">Instagram</span></a></li>
+                    {% endif %}
+                    {% if config.SOCIAL_NETWORKS_MEDIUM_URL != '#' %}
+                        <li><a href="{{ config.SOCIAL_NETWORKS_MEDIUM_URL }}" class="icon brands fa-medium-m"
+                               title="Medium"><span class="label">Medium</span></a></li>
+                    {% endif %}
+                    {% if config.SOCIAL_NETWORKS_TELEGRAM_URL != '#' %}
+                        <li><a href="{{ config.SOCIAL_NETWORKS_TELEGRAM_URL }}" class="icon brands fa-telegram"
+                               title="Telegram"><span class="label">Telegram</span></a></li>
+                    {% endif %}
+                    {% if config.SOCIAL_NETWORKS_GITHUB_URL != '#' %}
+                        <li><a href="{{ config.SOCIAL_NETWORKS_GITHUB_URL }}" class="icon brands fa-github"
+                               title="Github"><span class="label">Github</span></a></li>
+                    {% endif %}
+                    {% if config.SOCIAL_NETWORKS_GITLAB_URL != '#' %}
+                        <li><a href="{{ config.SOCIAL_NETWORKS_GITLAB_URL }}" class="icon brands fa-gitlab"
+                               title="Gitlab"><span class="label">Gitlab</span></a></li>
+                    {% endif %}
+                </ul>
+            </header>
+            <!-- /Header -->
+
+            {% block content %}
+            {% endblock %}
+
+        </div>
+    </div>
+
+    <!-- Sidebar -->
+    <div id="sidebar">
+        <div class="inner">
+
+            <!-- Search -->
+            <section id="search" class="alt">
+                <form method="GET" action="/search/">
+                    <input type="text" name="query" id="query" placeholder="Search"/>
+                </form>
+            </section>
+            <!-- /Search -->
+
+            <!-- Menu -->
+            <nav id="menu">
+                <header class="major">
+                    <h2>Menu</h2>
+                </header>
+                <ul>
+                    <li><a href="{% url 'blog:index' %}">Homepage</a></li>
+                    <li><a href="{% url 'blog:blog' %}">Blog</a></li>
+                    <li>
+                        <span class="opener">Blog Categories</span>
+                        <ul>
+                            {% for blogs_category in blogs_categories %}
+                                <li><a href="{% url 'blog:blog_archive_by_category_pk' blogs_category.pk %}">{{ blogs_category.title }}</a></li>
+                            {% endfor %}
+                        </ul>
+                    </li>
+                    <li><a href="{% url 'blog:videocast' %}">Videocast</a></li>
+                    <li>
+                        <span class="opener">Videocast Categories</span>
+                        <ul>
+                            {% for videocasts_category in videocasts_categories %}
+                                <li><a href="{% url 'blog:videocast_archive_by_category_pk' videocasts_category.pk %}">{{ videocasts_category.title }}</a></li>
+                            {% endfor %}
+                        </ul>
+                    </li>
+                    <li><a href="{% url 'blog:podcast' %}">Podcast</a></li>
+                    <li>
+                        <span class="opener">Podcast Categories</span>
+                        <ul>
+                            {% for podcast_category in podcast_categories %}
+                                <li><a href="{% url 'blog:podcast_archive_by_category_pk' podcast_category.pk %}">{{ podcast_category.title }}</a></li>
+                            {% endfor %}
+                        </ul>
+                    </li>
+                </ul>
+            </nav>
+            <!-- /Menu -->
+
+            <!-- Section - podcast -->
+            <section id="podcast">
+                <header class="major">
+                    <h2>Trending</h2>
+                </header>
+                <div class="mini-posts">
+                    {% for podcast in podcasts %}
+                        <article>
+                            <a href="{% url 'blog:podcast_single' podcast.slug %}" class="image">
+                                <img src="{{ podcast.thumbnail.url }}" alt="{{ podcast.title }}"/>
+                            </a>
+                            <p>{{ podcast.blog | safe |truncatewords_html:15 }}</p>
+                            <a href="{% url 'blog:podcast_single' podcast.slug %}" class="button">More</a>
+                        </article>
+                    {% endfor %}
+                </div>
+            </section>
+            <!-- /Section - podcast -->
+
+            {% if config.GET_IN_TOUCH_ACTIVE == 'yes' %}
+                <!-- get_in_touch -->
+                <section id="get_in_touch">
+                    <header class="major">
+                        <h2>Get in touch</h2>
+                    </header>
+                    <p>{{ config.GET_IN_TOUCH_INFO | safe }}</p>
+                    <ul class="contact">
+                        <li class="icon solid fa-envelope">
+                            <a href="mailto:{{ config.GET_IN_TOUCH_EMAIL_ADDRESS }}">{{ config.GET_IN_TOUCH_EMAIL_ADDRESS }}</a>
+                        </li>
+                        <li class="icon solid fa-phone">
+                            {{ config.GET_IN_TOUCH_PHONE }}
+                        </li>
+                        <li class="icon solid fa-home">
+                            {{ config.GET_IN_TOUCH_ADDRESS | safe }}
+                        </li>
+                        <li style="font-size: 1.75rem;">
+                            <a href="{{ config.SOCIAL_NETWORKS_GITHUB_URL }}" class="icon brands fa-github"></a>
+                            <a href="{{ config.SOCIAL_NETWORKS_GITHUB_URL }}" class="icon brands fa-facebook"></a>
+                            <a href="{{ config.SOCIAL_NETWORKS_GITHUB_URL }}" class="icon brands fa-instagram"></a>
+                        </li>
+                        
+                    </ul>
+                </section>
+                <!-- /get_in_touch -->
+            {% endif %}
+
+            <!-- Footer -->
+            <footer id="footer">
+                <p class="copyright">
+                    &copy; MyBlog. All rights reserved. Design: <a href="https://github.com/raja53a">@Code</a>. CMS: <a
+                        href="https://github.com/raja53a" title="">MyBlog</a></p>
+            </footer>
+            <!-- /Footer -->
+
+        </div>
+    </div>
+
+</div>
+
+<!-- Scripts -->
+<script src="{% static '/assets/js/jquery.min.js' %}"></script>
+<script src="{% static '/assets/js/browser.min.js' %}"></script>
+<script src="{% static '/assets/js/breakpoints.min.js' %}"></script>
+<script src="{% static '/assets/js/util.js' %}"></script>
+<script src="{% static '/assets/js/main.js' %}"></script>
+<!-- /Scripts -->
+
+</body>
+</html>
